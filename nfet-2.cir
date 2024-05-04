@@ -1,0 +1,34 @@
+MOSFET demo #2 - Keep Vgs steady and ramp up Vdd
+* Notice that the current change is quite small even thout
+* the voltage is changing a lot, indicating that the NFET
+* is behaving like an ideal current source.
+
+* The drain voltage. 
+Vdd vdd 0 dc 0 pulse 0.05 1.8 0 500n 500n 1n
+
+* The input signal for dc and tran simulation
+Vgs in 0 0.4
+
+* Resistor from vdd to out
+R1 vdd out 100
+* NMOS (drain, gate, source, body).  The model being used here 
+* is called "nm"
+Mn1 out in 0 0 nm W=2u L=0.15u
+
+* model and model parameters (we use the built-in default parameters for BSIM4)
+.model nm nmos level=14 version=4.8.1
+
+* control language script
+.control
+tran 100p 1000n
+set xbrushwidth=2
+plot v(vdd) v(out) v(vdd)-v(out)
+plot -1 * i(vdd)
+plot v(out)/-i(vdd)
+write $inputdir/outtran.out v(in) v(out)
+*reset
+*dc vin 0 1 0.01              ; simulation command 2
+*plot v(out)                  ; v(in) not required because it is the x axis already
+*write $inputdir/outdc.out v(out)
+.endc
+.end

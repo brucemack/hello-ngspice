@@ -1,0 +1,35 @@
+MOSFET demo #3 - Differential pair above a current source
+
+* The drain voltage. 
+Vdd vdd 0 1.8
+
+* The input signal for dc and tran simulation
+Vin_p in_p 0 dc 0 pulse 0.7 0.9 0 500n 500n 1n
+Vin_m in_m 0 dc 0 pulse 0.7 0.9 0 500n 500n 1n
+Vbias_0 bias_0 0 0.7
+
+* Load resistors 
+R1_p vdd out_p 1000
+R1_m vdd out_m 1000
+* Differential pair
+* NMOS (drain, gate, source, body).  The model being used here 
+* is called "nm"
+Mn1_p out_p in_p cs cs nm W=2u L=0.15u
+Mn1_m out_m in_m cs cs nm W=2u L=0.15u
+* The current source
+Mn2 cs bias_0 0 0 nm W=2u L=0.15u
+
+* model and model parameters (we use the built-in default parameters for BSIM4)
+.model nm nmos level=14 version=4.8.1
+
+* control language script
+.control
+.options savecurrents
+tran 100p 1000n
+set xbrushwidth=2
+plot v(in_p) v(in_m) v(out_p) v(out_m)
+plot v(in_p)-v(in_m) v(out_m)-v(out_p)
+plot @mn2[id]
+plot @r1_p[i]-@r1_m[i] 
+.endc
+.end

@@ -1,0 +1,26 @@
+MOSFET demo #1 - Ramp up Vgs 
+
+* The power supply.  Node is called "out"
+Vdd out 0 1.8
+
+* The input signal for dc and tran simulation
+* Ramp up from 0->1v in 250ns and then back down.
+Vgs in 0 dc 0 pulse 0 1 0 250n 250n 1n
+
+* NMOS (drain, gate, source, body).  The model being used here 
+* is called "nm"
+Mn1 out in 0 0 nm W=2u L=0.15u
+
+* Model and model parameters (we use the built-in default parameters for BSIM4)
+* The model is called "nm"
+.model nm nmos level=14 version=4.8.1
+
+.control
+* Transient analysis
+tran 100p 500n
+set xbrushwidth=2
+plot v(in) v(out)
+plot -1 * i(vdd)
+write $inputdir/outtran.out v(in) v(out)
+.endc
+.end
