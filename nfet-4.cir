@@ -1,0 +1,38 @@
+MOSFET demo #4 - Differential pair above a current source and PMOS diodes for output load.
+
+* model and model parameters (we use the built-in default parameters for BSIM4)
+.model nm nmos level=14 version=4.8.1
+.model pm pmos level=14 version=4.8.1
+
+* The drain voltage. 
+Vdd vdd 0 1.8
+* The input signal for dc and tran simulation
+Vin_p in_p 0 dc 0 pulse 0.9 0.9 0 500n 500n 1n
+Vin_m in_m 0 dc 0 pulse 0.9 0.7 0 500n 500n 1n
+* Fixed bias
+Vbias_0 bias_0 0 0.7
+
+* Load FETS in diode configuration.  Bodies tied up to vdd in both cases,
+* gates tied to drain.  The model being used is "pm"
+Mp0_p vdd out_p out_p vdd pm W=2u L=0.15u
+* Notice the minus gate ties across to the plus output drain
+Mp0_m vdd out_m out_m vdd pm W=2u L=0.15u
+
+* Differential pair
+* NMOS (drain, gate, source, body).  The model being used here 
+* is called "nm"
+Mn1_p out_p in_p cs cs nm W=2u L=0.15u
+Mn1_m out_m in_m cs cs nm W=2u L=0.15u
+* The current source
+Mn2 cs bias_0 0 0 nm W=2u L=0.15u
+
+.control
+.options savecurrents
+tran 100p 1000n
+set xbrushwidth=2
+* Absolute voltages
+plot v(in_p) v(in_m) v(out_p) v(out_m)
+* Differential voltages
+plot v(in_p)-v(in_m) v(out_m)-v(out_p)
+.endc
+.end
