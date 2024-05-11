@@ -1,0 +1,49 @@
+MOSFET Using Skywater Model.  Bias and vary id
+
+** opencircuitdesign pdks install
+.lib /home/ttuser/pdk/sky130A/libs.tech/ngspice/sky130.lib.spice tt
+.param devwidth = 1.5
+
+* The power supply.
+Vdd vdd 0 1.8
+Vss vss 0 0
+* The input signal
+Vgs vg 0 0
+
+* Notice that the MOSFET is represented as a subcircuit (starts with X!)
+XMn1 vdd vg vss vss sky130_fd_pr__nfet_01v8 
++ L=0.30 W={devwidth} nf=1 
++ ad='int((nf+1)/2) * W/nf * 0.29' 
++ as='int((nf+2)/2) * W/nf * 0.29' 
++ pd='2*int((nf+1)/2) * (W/nf + 0.29)'
++ ps='2*int((nf+2)/2) * (W/nf + 0.29)' 
++ nrd='0.29 / W' 
++ nrs='0.29 / W' 
++ sa=0 sb=0 sd=0 mult=1 m=1
+
+.control
+; Delete all of the plots
+destroy all
+
+alterparam devwidth = 1.5
+reset
+.options savecurrents
+dc Vgs .5 1.0 0.01
+
+alterparam devwidth = 3.0
+reset
+.options savecurrents
+dc Vgs .5 1.0 0.01
+
+; ----- Plots ------
+
+;set xbrushwidth=2
+plot dc2.i(vdd) dc1.i(vdd) 
+
+; Helpful display
+setplot
+display
+
+.endc
+
+.end
