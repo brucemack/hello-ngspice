@@ -1,0 +1,38 @@
+Mirror demo #1 - Baker pg. 274
+
+* model and model parameters (we use the built-in default parameters for BSIM4)
+.model nm nmos level=14 version=4.8.1
+.model pm pmos level=14 version=4.8.1
+
+* The supply voltages. 
+Vdd vdd 0 1.8
+Vss vss 0 0
+
+* ----- Left stack
+* Current source
+Ibias vdd vd3 4e-6
+* Drain/gate/source/body
+M3 vd3 vd3 vd1 vss nm W=10u L=2u
+M1 vd1 vd1 vss vss nm W=10u L=2u
+
+* ----- Right stack
+* Drain/gate/source/body
+M4 vdd vd3 vd2 vss nm W=10u L=2u
+M2 vd2 vd1 vss vss nm W=10u L=2u
+
+* Current source being injected into the right stack
+Itest vd2 0 0
+*Itest vd2 0 -5e-7
+*Itest vd2 0 dc 0 pulse 0 -1e-6 0 1000n 1n 1n
+
+.control
+.options savecurrents
+tran 100p 1000n
+set xbrushwidth=2
+* voltages
+plot v(vdd)-v(vd3) v(vd3)-v(vd1) v(vd1)-v(vss) v(vd3)-v(vd2) v(vd2)-v(vss)
+* Currents
+*plot @m1[id] @m2[id] 
+*plot @m3[id] @m4[id] 
+.endc
+.end
