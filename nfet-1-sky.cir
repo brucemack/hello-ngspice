@@ -1,39 +1,28 @@
-MOSFET demo #1 using Skywater Model - Ramp up Vgs 
+NMOS Demo #1 using Skywater 130 model
 
-** opencircuitdesign pdks install
 .lib /home/ttuser/pdk/sky130A/libs.tech/ngspice/sky130.lib.spice tt
 
-* Model and model parameters (we use the built-in default parameters for BSIM4)
-* The model is called "nm"
-.model nm nmos level=14 version=4.8.1
-
-* The power supply.  Node is called "out"
-Vdd out 0 1.8
+Vdd vdd 0 1.8
 Vss vss 0 0
+* Fixed Vgs
+Vgs in 0 1.8
 
-* The input signal for dc and tran simulation
-* Ramp up from 0->1v in 250ns and then back down.
-Vgs in 0 dc 0 pulse 0 1 0 250n 250n 1n
-
-* NMOS (drain, gate, source, body).  
-*Mn1 out in 0 0 nm W=2u L=0.15u
-* Notice that the MOSFET is represented as a subcircuit (starts with X!)
-XMn1 out in 0 0 sky130_fd_pr__nfet_01v8 
-+ L=0.15 W=8 nf=1 
+* Notice that the MOSFET is represented here as a subcircuit (starts with X!)
+* NMOS pin convention: drain, gate, source, body.
+XMn1 vdd in vss vss sky130_fd_pr__nfet_01v8_lvt 
++ L=0.15 W=1 nf=1 
++ sa=0 sb=0 sd=0 mult=1 m=1
 + ad='int((nf+1)/2) * W/nf * 0.29' 
 + as='int((nf+2)/2) * W/nf * 0.29' 
 + pd='2*int((nf+1)/2) * (W/nf + 0.29)'
 + ps='2*int((nf+2)/2) * (W/nf + 0.29)' 
 + nrd='0.29 / W' 
 + nrs='0.29 / W' 
-+ sa=0 sb=0 sd=0 mult=1 m=1
 
 .control
 * Transient analysis
-tran 100p 500n
+tran 100p 1000n 10n
 set xbrushwidth=2
-plot v(in) v(out)
 plot -1 * i(vdd)
-write $inputdir/outtran.out v(in) v(out)
 .endc
 .end
