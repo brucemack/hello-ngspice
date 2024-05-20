@@ -1,0 +1,27 @@
+Baker Chapter 20 Example 20.1
+
+* Model and model parameters (we use the built-in default parameters for BSIM4)
+* The model is called "nm"
+.model nm nmos level=14 version=4.8.1
+
+Vdd vdd 0 5
+Vss vss 0 0 
+V0 v0 0 1
+
+* Resistor
+R1 vdd vd 200k
+* NMOS (drain, gate, source, body).
+Mn1 vd vd vss vss nm W=10u L=2u
+* NMOS (drain, gate, source, body).
+Mn2 v0 vd vss vss nm W=10u L=2u
+
+.control
+; Delete all of the plots
+destroy all
+.options savecurrents
+* DC analysis, sweeping Vdd
+dc V0 0.0 0.5 .01
+plot i(dc1.v0)
+plot deriv(i(dc1.v0))
+.endc
+.end

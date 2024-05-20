@@ -1,0 +1,25 @@
+Baker Chapter 20 Example 20.1 (PMOS)
+
+* Model and model parameters (we use the built-in default parameters for BSIM4)
+.model pm pmos level=14 version=4.8.1
+
+Vdd vdd 0 5
+Vss vss 0 0 
+V0 v0 0 1
+
+* PMOS (source, gate, drain, body).
+Mp1 vdd vd vd vdd pm W=30u L=2u
+* Resistor
+R1 vd vss 200k
+
+.control
+; Delete all of the plots
+destroy all
+.options savecurrents
+* DC analysis, sweeping Vdd
+*dc V0 0.0 0.5 .01
+*plot i(dc1.v0)
+op
+print @r1[i]
+.endc
+.end
