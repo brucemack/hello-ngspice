@@ -1,6 +1,6 @@
-set ngbehavior=hsa      ; Set compatibilty for reading PDK libs
-set ng_nomodcheck       ; Don't check the model parameters
-set skywaterpdk         ; Skip some checks for faster lib loading
+;set ngbehavior=hsa      ; Set compatibilty for reading PDK libs
+;set ng_nomodcheck       ; Don't check the model parameters
+;set skywaterpdk         ; Skip some checks for faster lib loading
 ;option noinit           ; Don't print operating point data
 option klu              ; Select KLU as matrix solver
-optran 0 0 0 100p 50n 0 ; Don't use DC operating point, but transient op
+optran 0 0 0 100p 100n 0 ; Don't use DC operating point, but transient op

@@ -1,0 +1,26 @@
+Baker Chapter 6 Figure 6.12 - PMOS Curve Trace
+
+* FET model using built-in default parameters for BSIM4
+.model nm1 nmos level=54 version=4.8.1
+.model pm1 pmos level=54 version=4.8.1
+
+* 
+* IMPORTANT: We are running with this line in the .spiceinit file:
+* 
+* optran 0 0 0 100p 50n 0 ; Don't use DC operating point, but transient op
+*
+Vdd vdd 0 dc 5
+Vds vds vdd dc -5
+Vgs vgs vdd dc -2
+
+* PMOS (drain, gate, source, body).
+M1 vds vgs vdd vdd pm1 W=10 L=1
+
+.control
+destroy all
+.options savecurrents
+.option scale=1u 
+dc vds 0 -3 -0.5 vgs 0 -3 -0.5
+plot i(vds)
+.endc
+.end
