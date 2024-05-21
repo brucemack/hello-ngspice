@@ -43,14 +43,13 @@ Msu1 va vd3 0 0 nm2 W=10 L=2
 Msu2 va va vdd vdd pm2 W=10 L=100
 Msu3 vd4 va vd3 0 nm2 W=10 L=1
 
-* Resistor
+* Resistor was already chosen to set the bias current to 20uA
 R1 vs2 0 6.5k
 
 .control
 destroy all
 .options savecurrents
 .option scale=1u 
-*dc Vdd 4.5 5.5 .1
 op
 *tran 100p 1000n
 *plot @mp3[id] @mp4[id]
