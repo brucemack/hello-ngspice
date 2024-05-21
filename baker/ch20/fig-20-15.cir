@@ -1,0 +1,64 @@
+Baker Chapter 20 Figure 20.15 - Current mirror long channel
+* 
+* IMPORTANT: We are running with this line in the .spiceinit file:
+* 
+* optran 0 0 0 100p 50n 0 ; Don't use DC operating point, but transient op
+*
+
+* =========================================================================
+* Using the model parameters from Baker pg 146
+.model nm2 nmos level=3
++ tox=200e-10    nsub=1e17      gamma=0.5
++ phi=0.7        vto=0.8        delta=3.0 
++ uo=650         eta=3.0e-6     theta=0.1
++ kp=120e-6      vmax=1e5       kappa=0.3
++ rsh=0          nfs=1e12       tpg=1
++ xj=500e-9      ld=100e-9
++ cgdo=200e-12   cgso=200e-12   cgbo=1e-10
++ cj=400e-6      pb=1           mj=0.5
++ cjsw=300e-12   mjsw=0.5
+.model pm2 pmos level=3
++ tox=200e-10    nsub=1e17      gamma=0.6
++ phi=0.7        vto=-0.9       delta=0.1
++ uo=250         eta=0          theta=0.1
++ kp=40e-6       vmax=5e4       kappa=1
++ rsh=0          nfs=1e12       tpg=-1
++ xj=500e-9      ld=100e-9
++ cgdo=200e-12   cgso=200e-12   cgbo=1e-10
++ cj=400e-6      pb=1           mj=0.5
++ cjsw=300e-12   mjsw=0.5
+* =========================================================================
+
+Vdd vdd 0 5
+
+* NMOS (drain, gate, source, body).
+Mn1 vd3 vd3 0 0 nm2 W=10 L=2
+Mn2 vd4 vd3 vs2 0 nm2 W=40 L=2
+* PMOS (drain, gate, source, body).
+Mp3 vd3 vd4 vdd vdd pm2 W=30 L=2
+Mp4 vd4 vd4 vdd vdd pm2 W=30 L=2
+
+* Startup circuit
+Msu1 va vd3 0 0 nm2 W=10 L=2
+Msu2 va va vdd vdd pm2 W=10 L=100
+Msu3 vd4 va vd3 0 nm2 W=10 L=1
+
+* Resistor
+R1 vs2 0 6.5k
+
+.control
+destroy all
+.options savecurrents
+.option scale=1u 
+*dc Vdd 4.5 5.5 .1
+op
+*tran 100p 1000n
+*plot @mp3[id] @mp4[id]
+*plot @r1[i] 
+*plot v(vd3) v(vd4)
+print @mp3[id] @mp4[id]
+print @r1[i] @mn1[id]
+print v(vd3) v(vd4)
+print v(vd4) - v(vs2)
+.endc
+.end

@@ -1,0 +1,30 @@
+Baker Chapter 20 Figure 20.10 (current mirror)
+* 
+* IMPORTANT: We are running with this line in the .spiceinit file:
+* 
+* optran 0 0 0 100p 50n 0 ; Don't use DC operating point, but transient op
+*
+
+* FET model using built-in default parameters for BSIM4
+.model nm nmos level=54 version=4.8.1
+.model pm pmos level=54 version=4.8.1
+
+Vdd vdd 0 1
+* A current source just for measuring current
+Vmeas vd2 0 0
+
+* PMOS (drain, gate, source, body).
+Mp1 vd1 vd1  vdd vdd pm W=100u L=2u
+Mp2 vd2 vd1  vdd vdd pm W=100u L=2u
+
+* Resistor
+R1 vd1 0 65k
+
+.control
+destroy all
+.options savecurrents
+op
+print @r1[i] i(vmeas) v(vd1) v(vd2)
+print i(vmeas)/@r1[i]
+.endc
+.end
