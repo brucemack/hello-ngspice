@@ -1,0 +1,47 @@
+Baker Chapter 6 - Demonstration of a diode-connected NMOS
+
+* Using the model parameters from Baker pg 146
+.model nm2 nmos level=3
++ tox=200e-10    nsub=1e17      gamma=0.5
++ phi=0.7        vto=0.8        delta=3.0 
++ uo=650         eta=3.0e-6     theta=0.1
++ kp=120e-6      vmax=1e5       kappa=0.3
++ rsh=0          nfs=1e12       tpg=1
++ xj=500e-9      ld=100e-9
++ cgdo=200e-12   cgso=200e-12   cgbo=1e-10
++ cj=400e-6      pb=1           mj=0.5
++ cjsw=300e-12   mjsw=0.5
+.model pm2 pmos level=3
++ tox=200e-10    nsub=1e17      gamma=0.6
++ phi=0.7        vto=-0.9       delta=0.1
++ uo=250         eta=0          theta=0.1
++ kp=40e-6       vmax=5e4       kappa=1
++ rsh=0          nfs=1e12       tpg=-1
++ xj=500e-9      ld=100e-9
++ cgdo=200e-12   cgso=200e-12   cgbo=1e-10
++ cj=400e-6      pb=1           mj=0.5
++ cjsw=300e-12   mjsw=0.5
+
+* 
+* IMPORTANT: We are running with this line in the .spiceinit file:
+* 
+* optran 0 0 0 100p 50n 0 ; Don't use DC operating point, but transient op
+*
+
+* This circuit puts a fixed bias current into a diode-connected
+* NMOS to find a place along the Vds=Vgs curve.
+
+Vdd vdd 0 dc 5
+Ids vdd vd dc 20e-6
+
+* NMOS (drain, gate, source, body).
+M1 vd vd 0 0 nm2 W=10 L=2
+
+.control
+destroy all
+.options savecurrents
+.option scale=1u 
+tran 100p 500n
+plot vd
+.endc
+.end
